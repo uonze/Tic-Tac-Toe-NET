@@ -5,7 +5,7 @@
 
     public class PlayerFactory
     {
-        public static Player GetPlayer(PlayerType type, string name, CellType mark)
+        public static Player GetPlayer(PlayerType type, string name, CellStatus mark)
         {
             Player player = null;
 

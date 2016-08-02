@@ -4,12 +4,12 @@
 
     public class EasyPlayer : ComputerPlayer
     {
-        public EasyPlayer(string name, CellType mark)
+        public EasyPlayer(string name, CellStatus mark)
             : base(name, mark)
         {
         }
 
-        public override Tuple<int, int> NextMove(CellType[,] board)
+        public override Tuple<int, int> NextMove(CellStatus[,] board)
         {
             throw new NotImplementedException();
         }

@@ -1,6 +1,6 @@
 ﻿namespace TicTacToe.Domain.Model
 {
-    public enum CellType
+    public enum CellStatus
     {
         Free = 0,
         Circle = 1,

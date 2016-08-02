@@ -4,11 +4,11 @@
 
     public abstract class Player
     {
-        public Player(string name, CellType mark)
+        public Player(string name, CellStatus mark)
         {
             this.Name = name;
 
-            if (mark != CellType.Free)
+            if (mark != CellStatus.Free)
             {
                 this.Mark = mark;
             }
@@ -18,7 +18,7 @@
             }
         }
 
-        public CellType Mark { get; }
+        public CellStatus Mark { get; }
 
         public string Name { get; set; }
 

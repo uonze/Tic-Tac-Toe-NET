@@ -4,7 +4,7 @@
 
     public class HumanPlayer : Player
     {
-        public HumanPlayer(string name, CellType mark)
+        public HumanPlayer(string name, CellStatus mark)
             : base(name, mark)
         {
         }

@@ -20,88 +20,49 @@
             this.board = board;
         }
 
-        public Nullable<CellType> GetWinner()
+        // Returns null when no winner is found
+        public CellStatus? GetWinner()
         {
-            Nullable<CellType> winner = null;
+            CellStatus? winner = null;
 
-            this.ForEachCell((row, col, mark) =>
+            this.ForEachCellNotFree((cellPosition, mark) =>
             {
-                var cellPosition = new Point(row, col);
-                var directions = Enum.GetValues(typeof(Direction)).Cast<Direction>();
+                var directions = Direction.GetCompassDirections();
 
                 foreach (var direction in directions)
                 {
-                    var vector = this.GetDirectionVector(direction);
-                    var inlineCells = this.GetInlineCells(cellPosition, vector);
+                    var vector = Direction.GetDirectionVector(direction);
+                    var inlineCells = Board.GetInlineCells(cellPosition, vector);
 
-                    if (this.IsCellInsideBoard(inlineCells.Last()))
+                    if (this.board.CheckIfInlineCellsHaveTheSameMark(inlineCells, mark))
                     {
-                        foreach (var point in inlineCells)
-                        {
-                            var cellMark = this.board.GetCellAtPostion(point);
-                            if (cellMark != mark)
-                            {
-                                break;
-                            }
-                        }
+                        winner = mark;
                     }
                 }
             });
 
+            if (winner == CellStatus.Free)
+            {
+                throw new ApplicationException("The winner cannot be a free CellStatus.");
+            }
+
             return winner;
         }
 
-        private void ForEachCell(Action<int, int, CellType> action)
+        private void ForEachCellNotFree(Action<Point, CellStatus> action)
         {
             for (int row = 0; row < this.board.Height; row++)
             {
                 for (int col = 0; col < this.board.Width; col++)
                 {
-                    action(row, col, this.board.GetCellAtPostion(new Point(row, col)));
+                    var cellPosition = new Point(col, row);
+                    var cellStatus = this.board.GetCellStatusAtPostion(cellPosition);
+
+                    if (cellStatus != CellStatus.Free)
+                    {
+                        action(cellPosition, cellStatus);
+                    }
                 }
-            }
-        }
-
-        private bool IsCellInsideBoard(Point cell)
-        {
-            if (cell.X < 0 || cell.X > (this.board.Width - 1))
-            {
-                return false;
-            }
-
-            if (cell.Y < 0 || cell.Y > (this.board.Height - 1))
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        private List<Point> GetInlineCells(Point cell, Point vector)
-        {
-            var cells = new List<Point>() { cell };
-
-            for (int i = 0; i < 2; i++)
-            {
-                cells.Add(new Point(cells.Last().X + vector.X, cells.Last().Y + vector.Y));
-            }
-
-            return cells;
-        }
-
-        private Point GetDirectionVector(Direction direction)
-        {
-            switch (direction)
-            {
-                case Direction.North: return new Point(0, 1);
-                case Direction.Northeast: return new Point(1, 1);
-                case Direction.East: return new Point(1, 0);
-                case Direction.Southeast: return new Point(1, -1);
-                case Direction.South: return new Point(0, -1);
-                case Direction.Southwest: return new Point(-1, -1);
-                case Direction.West: return new Point(-1, 0);
-                case Direction.Northwest: return new Point(-1, 1);
-                default: return new Point(0, 0);
             }
         }
     }
